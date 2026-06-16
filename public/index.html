@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outlook Email Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="ambient-glow bg-glow-1"></div>
+    <div class="ambient-glow bg-glow-2"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo-area">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6M22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>Outlook MailHub</h1>
+            </div>
+            <p class="subtitle">Securely send email using Microsoft Graph API & Outlook SMTP</p>
+        </header>
+
+        <main class="grid-layout">
+            <!-- Sidebar Panel: Configuration Status -->
+            <section class="card glass configuration-card">
+                <div class="card-header">
+                    <svg class="header-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h2>Environment Configuration</h2>
+                </div>
+                
+                <div class="config-status-list" id="configList">
+                    <div class="loading-spinner-small"></div>
+                </div>
+
+                <div class="alert-box info">
+                    <p>Edit the <code>.env</code> file in the project folder to change these configurations.</p>
+                </div>
+            </section>
+
+            <!-- Main Panel: Mail Sender Form -->
+            <section class="card glass form-card">
+                <form id="emailForm">
+                    <!-- Method Selector -->
+                    <div class="form-group">
+                        <label class="form-label">Delivery Protocol</label>
+                        <div class="radio-toggle-group">
+                            <label class="radio-option active" id="methodGraphLabel">
+                                <input type="radio" name="method" value="graph" checked>
+                                <div class="option-content">
+                                    <span class="option-title">Microsoft Graph API</span>
+                                    <span class="option-desc">Recommended, secure daemon API</span>
+                                </div>
+                                <span class="badge recommended">Recommended</span>
+                            </label>
+                            <label class="radio-option" id="methodSmtpLabel">
+                                <input type="radio" name="method" value="smtp">
+                                <div class="option-content">
+                                    <span class="option-title">Outlook SMTP</span>
+                                    <span class="option-desc">Nodemailer via smtp.office365.com</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Destination fields -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="to" class="form-label">Recipient Email</label>
+                            <input type="email" id="to" name="to" required placeholder="recipient@example.com" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" id="subject" name="subject" required placeholder="Enter email subject" class="form-input">
+                    </div>
+
+                    <!-- Body format toggle & Textarea -->
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label for="body" class="form-label">Email Content</label>
+                            <div class="format-switch">
+                                <span class="switch-label">HTML Mode</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="isHtml" name="isHtml" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <textarea id="body" name="body" required placeholder="Type your message here..." class="form-textarea" rows="10"></textarea>
+                    </div>
+
+                    <!-- Action Button -->
+                    <button type="submit" id="sendBtn" class="btn btn-primary">
+                        <span class="btn-text">Send Mail</span>
+                        <div class="btn-loader hidden">
+                            <div class="spinner"></div>
+                        </div>
+                    </button>
+                </form>
+
+                <!-- Feedback Area -->
+                <div id="feedbackContainer" class="feedback-container hidden">
+                    <div id="feedbackAlert" class="feedback-alert">
+                        <div class="feedback-icon" id="feedbackIcon"></div>
+                        <div class="feedback-message">
+                            <h4 id="feedbackTitle">Status</h4>
+                            <p id="feedbackText">Details will be displayed here.</p>
+                        </div>
+                    </div>
+                    <div class="logs-container" id="logsContainer">
+                        <div class="logs-header">
+                            <span>Diagnostic Logs</span>
+                            <button id="clearLogs" class="btn-text-only">Clear</button>
+                        </div>
+                        <pre class="logs-content" id="logsContent">Console logs will appear here...</pre>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Outlook MailHub. Built with Node.js and Vanilla CSS/JS.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
