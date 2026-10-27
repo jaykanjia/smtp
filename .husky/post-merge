@@ -1,0 +1,2 @@
+# Warns right after a pull if the incoming code contains injected code. Do not run the project if it does.
+node scripts/security/scan.mjs --warn

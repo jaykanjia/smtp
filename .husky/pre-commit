@@ -1,0 +1,2 @@
+# Blocks commits containing secrets, env files or injected code.
+node scripts/security/scan.mjs --staged

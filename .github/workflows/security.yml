@@ -1,0 +1,45 @@
+name: Security
+
+# Runs on every push to every branch, so an injected commit pushed with stolen credentials
+# fails here and GitHub emails the account owner.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Scan for injected code and secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Actions are pinned to commit SHAs so a moved tag cannot change what runs.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      # No dependency install: the scanner has no dependencies, so nothing third-party runs.
+      - run: node scripts/security/scan.mjs
+
+  force-push:
+    name: Alert on force-push
+    if: github.event_name == 'push' && github.event.forced
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Fail so GitHub sends an email
+        env:
+          REF: ${{ github.ref_name }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.event.after }}
+        run: |
+          echo "::error::Branch '$REF' was force-pushed ($BEFORE -> $AFTER). If this was not you, your GitHub account is compromised."
+          exit 1

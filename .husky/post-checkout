@@ -1,0 +1,2 @@
+# Warns after switching branches if the branch contains injected code.
+node scripts/security/scan.mjs --warn
